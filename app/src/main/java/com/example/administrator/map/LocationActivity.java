@@ -380,8 +380,17 @@ public class LocationActivity extends Activity implements LocationListener {
                     //helper_data.add(i,m_data);
                     j += 3;
 
-                    position = new LatLng(Double.parseDouble(m_data.getLat()), Double.parseDouble(m_data.getLng()));
-                    mmap.addMarker(new MarkerOptions().position(position).title(m_data.getTitle()));
+//                    position = new LatLng(Double.parseDouble(m_data.getLat()), Double.parseDouble(m_data.getLng()));
+//                    mmap.addMarker(new MarkerOptions().position(position).title(m_data.getTitle()));
+
+                    //marker added
+                    MarkerOptions optFirst = new MarkerOptions();
+                    optFirst.position(position);// 위도 • 경도
+                    optFirst.title("Current Position");// 제목 미리보기
+                    optFirst.snippet("Snippet");
+                    optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_cast_on_0_light));
+                    mmap.addMarker(optFirst).showInfoWindow();
+
                 }
                 mmap.moveCamera(CameraUpdateFactory.newLatLngZoom(position,13));
             }
