@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import android.R.layout;
 import android.app.Activity;
@@ -20,6 +21,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -73,6 +75,9 @@ public class LocationActivity extends Activity implements LocationListener {
     private double current_lat;
     private double current_lng;
 
+    Helper_data m_data[];
+    String created_date[];
+
     public LocationActivity() {
     }
 
@@ -112,7 +117,7 @@ public class LocationActivity extends Activity implements LocationListener {
 
                 final EditText edit_title = (EditText) layout.findViewById(R.id.edit_title) ;
 
-                aDialog.setTitle("내 정보 수정하기"); //타이틀바 제목
+                aDialog.setTitle("위치 기록하기"); //타이틀바 제목
                 aDialog.setView(layout); //dialog.xml 파일을 뷰로 셋팅
 
                 aDialog.setPositiveButton("확인",
@@ -175,6 +180,18 @@ public class LocationActivity extends Activity implements LocationListener {
             setUpMapIfNeeded();
         }
 
+
+        mmap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+            public boolean onMarkerClick(Marker marker) {
+
+                int num =  (int)marker.getId().charAt(1)-48;
+
+                Toast.makeText(getApplicationContext(), num + "번째 생성\n" + "생성된 날짜: "+created_date[num] + "\n 남긴글 내용: "+ marker.getTitle(), Toast.LENGTH_LONG)
+                        .show();
+                return false;
+            }
+        });
     }
 
     @Override
@@ -375,21 +392,35 @@ public class LocationActivity extends Activity implements LocationListener {
                 }
                 int j = 2;
                 LatLng position = null;
-                for (int i = 1; i <= Integer.parseInt(data[1]); i++) {
-                    Helper_data m_data = new Helper_data(data[j], data[j + 1], data[j + 2]);
-                    //helper_data.add(i,m_data);
-                    j += 3;
+                LatLng position_past = null;
 
-//                    position = new LatLng(Double.parseDouble(m_data.getLat()), Double.parseDouble(m_data.getLng()));
-//                    mmap.addMarker(new MarkerOptions().position(position).title(m_data.getTitle()));
+                m_data = new Helper_data[100];
+                created_date = new String[100];
+
+                for (int i = 0; i < Integer.parseInt(data[1]); i++) {
+
+                    created_date[i] = data[j];
+                    m_data[i] = new Helper_data(data[j + 1], data[j + 2], data[j + 3]);
+
+                    //helper_data.add(i,m_data);
+                    j += 4;
+
+                    position = new LatLng(Double.parseDouble(m_data[i].getLat()), Double.parseDouble(m_data[i].getLng()));
+
+                    mmap.addMarker(new MarkerOptions().position(position).title(m_data[i].getTitle()));
+
+                    if(position_past!=null)
+                        mmap.addPolyline(new PolylineOptions().add(position_past,position).width(5).color(Color.RED));
+
+                    position_past = position;
 
                     //marker added
-                    MarkerOptions optFirst = new MarkerOptions();
-                    optFirst.position(position);// 위도 • 경도
-                    optFirst.title("Current Position");// 제목 미리보기
-                    optFirst.snippet("Snippet");
-                    optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_cast_on_0_light));
-                    mmap.addMarker(optFirst).showInfoWindow();
+//                    MarkerOptions optFirst = new MarkerOptions();
+//                    optFirst.position(position);// 위도 • 경도
+//                    optFirst.title("Current Position");// 제목 미리보기
+//                    optFirst.snippet("Snippet");
+//                    optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_cast_on_0_light));
+//                    mmap.addMarker(optFirst).showInfoWindow();
 
                 }
                 mmap.moveCamera(CameraUpdateFactory.newLatLngZoom(position,13));

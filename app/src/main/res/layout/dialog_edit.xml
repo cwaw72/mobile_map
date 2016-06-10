@@ -27,7 +27,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Title : "
+                android:text="글 남기기 : "
                 android:textColor="#000000"
                 android:textSize="15sp"
                 android:textStyle="bold" >
