@@ -407,7 +407,7 @@ public class LocationActivity extends Activity implements LocationListener {
 
                     position = new LatLng(Double.parseDouble(m_data[i].getLat()), Double.parseDouble(m_data[i].getLng()));
 
-                    mmap.addMarker(new MarkerOptions().position(position).title(m_data[i].getTitle()));
+                    mmap.addMarker(new MarkerOptions().position(position).title(m_data[i].getTitle()).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_name)));
 
                     if(position_past!=null)
                         mmap.addPolyline(new PolylineOptions().add(position_past,position).width(5).color(Color.RED));
